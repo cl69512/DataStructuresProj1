@@ -152,6 +152,14 @@ public class DLL<E> {
     } // addLast
 
     /**
+     * Adds the elemented inputted to the beginning of the list. 
+     * @param element item to be stored
+     */
+    public void addFirst(E element) {
+        
+    } // addFirst
+
+    /**
      * Creates and returns a string of each element in the list.
      * @return String of each element
      */
