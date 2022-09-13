@@ -11,7 +11,7 @@ public class DLL<E> {
     /**
      * Constructs a doubly linked list.
      */
-    public <E>DLL() {
+    public <T>DLL() {           // changed to T, my editor said it is hiding a type parameter from the outside scope
         head = null;
         tail = null;
         counter = 0;
@@ -113,12 +113,18 @@ public class DLL<E> {
      * @param args command-line arguments
      */
     public static void main(String[] args) {
-        DLL<Integer> list = new DLL<Integer>();
+        DLL<Integer> list = new DLL<>();
         list.addLast(1);
         list.addLast(2);
         list.addLast(3);
         list.addLast(4);
-        list.addLast(5);
+        list.addFirst(5);
+        list.addFirst(6);
+        System.out.println(list.toString());
+        list.isEmpty();
+        list.first();
+        list.last();
+        list.removeFirst();
         System.out.println(list.toString());
     } // main
 
@@ -130,25 +136,108 @@ public class DLL<E> {
         return counter;
     } // size
 
+    public boolean isEmpty() {
+        if (this.size() == 0) {
+            System.out.println("List is empty.");
+            return true;  
+        } else {
+            System.out.println("List is not empty.");
+            return false;
+        }
+    } // isEmpty
+
     /**
+     * Returns (but does not remove) the first element of the list.
+     * @return 
+     */
+    public E first() {
+        Node<E> elementToReturn = this.head;
+        if (elementToReturn == null) {
+            System.out.println("The list is empty and does not contain any elements.");
+            return null;
+        } else {
+            System.out.println("The first element in the list is " + elementToReturn.getElement() + ".");
+            return elementToReturn.getElement();
+        }
+    } // first
+
+    /**
+     * Returns (but does not remove) the last element of the list
+     * @return
+     */
+    public E last() {
+        Node<E> lastElement = this.tail;
+        if (lastElement == null) {
+            System.out.println("The list is empty and does not contain any elements.");
+            return null;
+        } else {
+            System.out.println("The last element in the list is " + lastElement.getElement() + ".");
+            return lastElement.getElement();
+        }
+    } // last
+
+    /**
+     * Removes and rerurns the first element in the list. 
+     * @return
+     * 
+     */
+    public E removeFirst() {
+        Node<E> temp = this.head;
+        head = head.next;
+        head.setPrev(null);
+        System.out.println("First item in list removed.");
+        return temp.getElement();
+    } // removeFirst
+
+    /**
+     * Removes and rerurns the last element in the list. 
+     * @return
+     * 
+     */
+   //public E removeLast() {
+
+   // } // removeLast
+
+     /**
      * Adds the given element to the end of the list.
      * @param element item to be stored in the node
      */
-
     public void addLast(E element) {
         // Checks if list is empty and makes new node the head and tail
         if(this.size() == 0) {
-            this.head = new Node<E>(element);
+            this.head = new Node<>(element);
             this.tail = this.head;
         } else {
             // Makes new node and sets the tail to it
-            Node<E> temp = new Node<E>(element);
+            Node<E> temp = new Node<>(element);
             this.tail.setNext(temp);
             temp.setPrev(this.tail);
             this.tail = temp;
         } // if
         counter++;
     } // addLast
+
+    /**
+     * Adds the elemented inputted to the beginning of the list. 
+     * @param element item to be stored
+     */
+    public void addFirst(E element) {
+        // Checks if list is empty and makes new node the head and tail
+        if(this.size() == 0) {
+            this.head = new Node<>(element);
+            this.tail = this.head;
+        } else {
+            Node<E> temp = new Node<>(element);
+            temp.setNext(head);
+            temp.setPrev(null);
+            if (head != null) {
+                head.setPrev(temp);
+            }
+            head = temp;
+        } // if
+        counter++;
+    } // addFirst
+    
 
     /**
      * Creates and returns a string of each element in the list.
@@ -158,7 +247,7 @@ public class DLL<E> {
         if(this.size() == 0) {
             return "null";
         } // if
-        String elements = new String("null <-- ");
+        String elements = "null <-- ";
         Node<E> temp = this.head;
         // Goes through each node and adds the element to the string
         while(temp != null) {
