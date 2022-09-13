@@ -322,4 +322,69 @@ public class DLL<E> {
         temp.setElement(element);
         return oldElement;
     } // set
+    
+    
+    /*
+    * Removes an element at the specified position from the list. 
+    * @return the element that was removed
+    */
+    public E remove(int index) { 
+        
+        if (size != 0 && size > index) { 
+            Node temp = head.getPrev(); 
+            for (int i = 0; i < index; i++) { 
+                temp = temp.getNext();
+            } // for
+            
+            E deletedElement = temp.getNext().getElement(); 
+            temp.getNext().getNext().setPrev(temp);
+            temp.setNext(temp.getNext().getNext());
+            
+            if (index == 0) {
+                head = temp.getNext();
+            } // if 
+            // decrease the size by 1
+            size--;
+            
+            return temp;
+            
+        } // if 
+        else { 
+            return null;
+        } // else     
+    } // remove
+    
+    /*
+    * inserts the element at a specific position 
+    * @return the element
+    */
+    public void insert(int index, E element) { 
+        // return if null
+        if (element == null) {
+            return;
+        } // if 
+        // if the DLL is empty, the head of the node will be the element
+       if (size == 0) { 
+           head = new Node(element, null, null);
+           head.setNext(head);
+           head.setPrev(head);
+       } // if
+        else { 
+            Node temp = head;
+            for (int i = 0; i < index; i++) { 
+                temp = temp.getNext();
+            } // for 
+            Node insertNode = new Node(element, temp.getPrev(), temp);
+            temp.getPrev().setNext(insertNode); 
+            temp.setPrev(insertNode);
+            if (index == 0) { 
+                head = insertNode;
+            } // if 
+            size++;
+        } // else 
+    } // insert
+    
+    
+    
+    
 } // DLL
