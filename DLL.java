@@ -384,6 +384,42 @@ public class DLL<E> {
         } // else 
     } // insert
     
+    /*
+    * The remove method removes the specified node from the list.
+    */
+    
+    public void remove (Node x) { 
+        
+        //if the x or the head is null, return 
+        if ( head == null || x == null) { 
+            return;
+        } // if 
+        
+        //if x is the head node 
+        if ( head == x) { 
+            head = x.next;
+        } // if 
+        
+        // next changes if the node that's deleted isn't the last node 
+        if ( x.next != null ) { 
+            x.next.prev = x.prev;
+        } // if 
+        
+        // prev changes if the node that's deleted isn't the last node 
+        if ( x.prev != null ) { 
+            x.next.prev = x.next;
+        } // if 
+        return;
+    } // remove
+    
+    /*
+    * Removes all elements from the list 
+    */
+    public void clear() { 
+        DLL <E> newList = new DLL <E>();
+        return newList;
+    } // void
+    
     
     
     
