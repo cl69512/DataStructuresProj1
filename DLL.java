@@ -115,16 +115,7 @@ public class DLL<E> {
     public static void main(String[] args) {
         DLL<Integer> list = new DLL<>();
         list.addLast(1);
-        list.addLast(2);
-        list.addLast(3);
-        list.addLast(4);
-        list.addFirst(5);
-        list.addFirst(6);
-        System.out.println(list.toString());
-        list.isEmpty();
-        list.first();
-        list.last();
-        list.removeFirst();
+        list.removeLast();
         System.out.println(list.toString());
     } // main
 
@@ -182,10 +173,21 @@ public class DLL<E> {
      * 
      */
     public E removeFirst() {
-        Node<E> temp = this.head;
-        head = head.next;
-        head.setPrev(null);
-        System.out.println("First item in list removed.");
+        Node<E> temp = new Node<>();
+        if (this.head != null) {
+            if (this.head.next == null) {
+                this.head = null;
+                System.out.println("First item in list removed. No items left.");
+            } else {
+                temp = this.head;
+                head = head.next;
+                head.setPrev(null);
+                System.out.println("First item in list removed.");
+                return temp.getElement();
+            }
+        } else {
+            System.out.println("List is empty, nothing to remove.");
+        }
         return temp.getElement();
     } // removeFirst
 
@@ -194,9 +196,24 @@ public class DLL<E> {
      * @return
      * 
      */
-   //public E removeLast() {
-
-   // } // removeLast
+    public E removeLast() {
+        Node<E> temp = new Node<>();
+        if (this.head != null) {
+            if (this.head.next == null) {
+                this.head = null;
+                System.out.println("Last and only item removed. List is now empty.");
+            } else {
+                // traverse to the second last element of list
+                temp = tail;
+                tail = tail.prev;
+                tail.next = null;
+                System.out.println("Last item in the list removed.");
+            }
+        } else {
+            System.out.println("List is empty, nothing to remove.");
+        }
+        return temp.getElement();
+    } // removeLast
 
      /**
      * Adds the given element to the end of the list.
