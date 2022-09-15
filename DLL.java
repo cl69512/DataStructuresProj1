@@ -119,6 +119,7 @@ public class DLL<E> {
         list.addLast(3);
         list.addLast(4);
         list.addLast(5);
+        DLL<Integer>.Node<Integer> node = new Node<Integer>(6);
         System.out.println(list.toString());
     } // main
 
