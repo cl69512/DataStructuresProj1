@@ -486,5 +486,13 @@ public class DLL<E> {
         } // if
     } // swap
 
+    /*
+    * returns a shallow copy/ clone() of the DLL
+    */
+    protected E clone() throws CloneNotSupportedException {
+		return super.clone();
+	}
+
+    
 
 } // DLL
