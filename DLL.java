@@ -437,6 +437,29 @@ public class DLL<E> {
         return newList;
     } // void
     
+    /*
+    * Creates a new sequence of nodes whose values are equal to the 
+    * objects in the original list
+    */
+    public DLL<E> deepClone() throws CloneNotSupportedException { 
+        DLL copyList = new DLL<E>();
+        
+        if (size > 0) { 
+            copyList.head = new Node<>(head.getElement());
+            Node <E> middle = head.getNext();
+            Node <E> anotherTail = copyList.head;
+            
+            while (middle != null) { 
+                Node <E> newNode = new Node<> (middle.getElement());
+                
+                anotherTail.setNext(newNode);
+                anotherTail = newNode;
+                middle = middle.getNext();
+            } // while
+        } // if 
+        return copyList;
+        
+    } // deepClone
     
     
     
