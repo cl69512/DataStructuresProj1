@@ -11,7 +11,7 @@ public class DLL<E> {
     /**
      * Constructs a doubly linked list.
      */
-    public <T>DLL() {           // changed to T, my editor said it is hiding a type parameter from the outside scope
+    public <T>DLL() {
         head = null;
         tail = null;
         counter = 0;
@@ -341,14 +341,14 @@ public class DLL<E> {
     } // set
 
 
-    /*
+    /**
     * Removes an element at the specified position from the list.
     * @return the element that was removed
     */
     public E remove(int index) {
 
-        if (size != 0 && size > index) {
-            Node temp = head.getPrev();
+        if (this.size() != 0 && this.size() > index) {
+            Node<E> temp = head.getPrev();
             for (int i = 0; i < index; i++) {
                 temp = temp.getNext();
             } // for
@@ -361,9 +361,9 @@ public class DLL<E> {
                 head = temp.getNext();
             } // if
             // decrease the size by 1
-            size--;
+            counter--;
 
-            return temp;
+            return temp.getElement();
 
         } // if
         else {
@@ -371,7 +371,7 @@ public class DLL<E> {
         } // else
     } // remove
 
-    /*
+    /**
     * inserts the element at a specific position
     * @return the element
     */
@@ -381,7 +381,7 @@ public class DLL<E> {
             return;
         } // if
         // if the DLL is empty, the head of the node will be the element
-       if (size == 0) {
+        if (this.size() == 0) {
            head = new Node(element, null, null);
            head.setNext(head);
            head.setPrev(head);
@@ -397,14 +397,14 @@ public class DLL<E> {
             if (index == 0) {
                 head = insertNode;
             } // if
-            size++;
+            counter++;
         } // else
     } // insert
 
-    /*
+    /**
     * The remove method removes the specified node from the list.
+    * @param x node to remove
     */
-
     public void remove (Node x) {
 
         //if the x or the head is null, return
@@ -414,37 +414,37 @@ public class DLL<E> {
 
         //if x is the head node
         if ( head == x) {
-            head = x.next;
+            head = x.getNext();
         } // if
 
         // next changes if the node that's deleted isn't the last node
-        if ( x.next != null ) {
-            x.next.prev = x.prev;
+        if ( x.getNext() != null ) {
+            x.getPrev().setNext(x.getNext());
         } // if
 
-        // prev changes if the node that's deleted isn't the last node
-        if ( x.prev != null ) {
-            x.next.prev = x.next;
+        // prev changes if the node that's deleted isn't the first node
+        if ( x.getPrev() != null ) {
+            x.getNext().setPrev(x.getPrev());
         } // if
+        counter--;
         return;
     } // remove
 
-    /*
+    /**
     * Removes all elements from the list
     */
     public void clear() {
         DLL <E> newList = new DLL <E>();
-        return newList;
     } // void
 
-    /*
+    /**
     * Creates a new sequence of nodes whose values are equal to the
     * objects in the original list
     */
     public DLL<E> deepClone() throws CloneNotSupportedException {
         DLL copyList = new DLL<E>();
 
-        if (size > 0) {
+        if (this.size() > 0) {
             copyList.head = new Node<>(head.getElement());
             Node <E> middle = head.getNext();
             Node <E> anotherTail = copyList.head;
@@ -461,6 +461,30 @@ public class DLL<E> {
 
     } // deepClone
 
+    /**
+     * Switches the positions of two nodes in the list.
+     * @param x first node
+     * @param y second node
+     */
+    public void swap(Node<E> x, Node<E> y) {
+        Node<E> xPrevNode = x.getPrev();
+        Node<E> xNextNode = x.getNext();
+        Node<E> yPrevNode = y.getPrev();
+        Node<E> yNextNode = y.getNext();
+
+        // Checks if x and y are next to each other
+        if(yPrevNode.equals(x)) {
+            y.setPrev(xPrevNode);
+            y.setNext(x);
+            x.setNext(yNextNode);
+            x.setPrev(y);
+        } else {
+            x.setPrev(yPrevNode);
+            x.setNext(yNextNode);
+            y.setPrev(xPrevNode);
+            y.setNext(xNextNode);
+        } // if
+    } // swap
 
 
 } // DLL
