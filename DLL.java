@@ -11,7 +11,7 @@ public class DLL<E> {
     /**
      * Constructs a doubly linked list.
      */
-    public <T>DLL() {           // changed to T, my editor said it is hiding a type parameter from the outside scope
+    public <T>DLL() {
         head = null;
         tail = null;
         counter = 0;
@@ -130,7 +130,7 @@ public class DLL<E> {
     public boolean isEmpty() {
         if (this.size() == 0) {
             System.out.println("List is empty.");
-            return true;  
+            return true;
         } else {
             System.out.println("List is not empty.");
             return false;
@@ -139,7 +139,7 @@ public class DLL<E> {
 
     /**
      * Returns (but does not remove) the first element of the list.
-     * @return 
+     * @return
      */
     public E first() {
         Node<E> elementToReturn = this.head;
@@ -168,9 +168,9 @@ public class DLL<E> {
     } // last
 
     /**
-     * Removes and rerurns the first element in the list. 
+     * Removes and rerurns the first element in the list.
      * @return
-     * 
+     *
      */
     public E removeFirst() {
         Node<E> temp = new Node<>();
@@ -192,9 +192,9 @@ public class DLL<E> {
     } // removeFirst
 
     /**
-     * Removes and rerurns the last element in the list. 
+     * Removes and rerurns the last element in the list.
      * @return
-     * 
+     *
      */
     public E removeLast() {
         Node<E> temp = new Node<>();
@@ -235,7 +235,7 @@ public class DLL<E> {
     } // addLast
 
     /**
-     * Adds the elemented inputted to the beginning of the list. 
+     * Adds the elemented inputted to the beginning of the list.
      * @param element item to be stored
      */
     public void addFirst(E element) {
@@ -254,7 +254,7 @@ public class DLL<E> {
         } // if
         counter++;
     } // addFirst
-    
+
 
     /**
      * Creates and returns a string of each element in the list.
@@ -339,128 +339,152 @@ public class DLL<E> {
         temp.setElement(element);
         return oldElement;
     } // set
-    
-    
-    /*
-    * Removes an element at the specified position from the list. 
+
+
+    /**
+    * Removes an element at the specified position from the list.
     * @return the element that was removed
     */
-    public E remove(int index) { 
-        
-        if (size != 0 && size > index) { 
-            Node temp = head.getPrev(); 
-            for (int i = 0; i < index; i++) { 
+    public E remove(int index) {
+
+        if (this.size() != 0 && this.size() > index) {
+            Node<E> temp = head.getPrev();
+            for (int i = 0; i < index; i++) {
                 temp = temp.getNext();
             } // for
-            
-            E deletedElement = temp.getNext().getElement(); 
+
+            E deletedElement = temp.getNext().getElement();
             temp.getNext().getNext().setPrev(temp);
             temp.setNext(temp.getNext().getNext());
-            
+
             if (index == 0) {
                 head = temp.getNext();
-            } // if 
+            } // if
             // decrease the size by 1
-            size--;
-            
-            return temp;
-            
-        } // if 
-        else { 
+            counter--;
+
+            return temp.getElement();
+
+        } // if
+        else {
             return null;
-        } // else     
+        } // else
     } // remove
-    
-    /*
-    * inserts the element at a specific position 
+
+    /**
+    * inserts the element at a specific position
     * @return the element
     */
-    public void insert(int index, E element) { 
+    public void insert(int index, E element) {
         // return if null
         if (element == null) {
             return;
-        } // if 
+        } // if
         // if the DLL is empty, the head of the node will be the element
-       if (size == 0) { 
+        if (this.size() == 0) {
            head = new Node(element, null, null);
            head.setNext(head);
            head.setPrev(head);
        } // if
-        else { 
+        else {
             Node temp = head;
-            for (int i = 0; i < index; i++) { 
+            for (int i = 0; i < index; i++) {
                 temp = temp.getNext();
-            } // for 
+            } // for
             Node insertNode = new Node(element, temp.getPrev(), temp);
-            temp.getPrev().setNext(insertNode); 
+            temp.getPrev().setNext(insertNode);
             temp.setPrev(insertNode);
-            if (index == 0) { 
+            if (index == 0) {
                 head = insertNode;
-            } // if 
-            size++;
-        } // else 
+            } // if
+            counter++;
+        } // else
     } // insert
-    
-    /*
+
+    /**
     * The remove method removes the specified node from the list.
+    * @param x node to remove
     */
-    
-    public void remove (Node x) { 
-        
-        //if the x or the head is null, return 
-        if ( head == null || x == null) { 
+    public void remove (Node x) {
+
+        //if the x or the head is null, return
+        if ( head == null || x == null) {
             return;
-        } // if 
-        
-        //if x is the head node 
-        if ( head == x) { 
-            head = x.next;
-        } // if 
-        
-        // next changes if the node that's deleted isn't the last node 
-        if ( x.next != null ) { 
-            x.next.prev = x.prev;
-        } // if 
-        
-        // prev changes if the node that's deleted isn't the last node 
-        if ( x.prev != null ) { 
-            x.next.prev = x.next;
-        } // if 
+        } // if
+
+        //if x is the head node
+        if ( head == x) {
+            head = x.getNext();
+        } // if
+
+        // next changes if the node that's deleted isn't the last node
+        if ( x.getNext() != null ) {
+            x.getPrev().setNext(x.getNext());
+        } // if
+
+        // prev changes if the node that's deleted isn't the first node
+        if ( x.getPrev() != null ) {
+            x.getNext().setPrev(x.getPrev());
+        } // if
+        counter--;
         return;
     } // remove
-    
-    /*
-    * Removes all elements from the list 
+
+    /**
+    * Removes all elements from the list
     */
-    public void clear() { 
+    public void clear() {
         DLL <E> newList = new DLL <E>();
-        return newList;
     } // void
-    
-    /*
-    * Creates a new sequence of nodes whose values are equal to the 
+
+    /**
+    * Creates a new sequence of nodes whose values are equal to the
     * objects in the original list
     */
-    public DLL<E> deepClone() throws CloneNotSupportedException { 
+    public DLL<E> deepClone() throws CloneNotSupportedException {
         DLL copyList = new DLL<E>();
-        
-        if (size > 0) { 
+
+        if (this.size() > 0) {
             copyList.head = new Node<>(head.getElement());
             Node <E> middle = head.getNext();
             Node <E> anotherTail = copyList.head;
-            
-            while (middle != null) { 
+
+            while (middle != null) {
                 Node <E> newNode = new Node<> (middle.getElement());
-                
+
                 anotherTail.setNext(newNode);
                 anotherTail = newNode;
                 middle = middle.getNext();
             } // while
-        } // if 
+        } // if
         return copyList;
-        
+
     } // deepClone
-    
-    
-    
+
+    /**
+     * Switches the positions of two nodes in the list.
+     * @param x first node
+     * @param y second node
+     */
+    public void swap(Node<E> x, Node<E> y) {
+        Node<E> xPrevNode = x.getPrev();
+        Node<E> xNextNode = x.getNext();
+        Node<E> yPrevNode = y.getPrev();
+        Node<E> yNextNode = y.getNext();
+
+        // Checks if x and y are next to each other
+        if(yPrevNode.equals(x)) {
+            y.setPrev(xPrevNode);
+            y.setNext(x);
+            x.setNext(yNextNode);
+            x.setPrev(y);
+        } else {
+            x.setPrev(yPrevNode);
+            x.setNext(yNextNode);
+            y.setPrev(xPrevNode);
+            y.setNext(xNextNode);
+        } // if
+    } // swap
+
+
 } // DLL
