@@ -82,3 +82,5 @@ instructions for them or remove them. We run our grader on your project.
 Two options for projects:
 • Choose a partner – someone you meet in the class
 • Opt to work alone – not recommended, but available
+  
+  Group names: Gavin Gaude, Caitlyn Liu, Philip Henning
