@@ -490,9 +490,13 @@ public class DLL<E> {
     * returns a shallow copy/ clone() of the DLL
     */
     protected E clone() throws CloneNotSupportedException {
+	    DLL copyList = new DLL<E>();
+	    this.DLL<T> = copyList;
 	    this.head = head;
 	    this.tail = tail;
 	    this.counter = counter; 
+	    
+	    
 	    
 	return super.clone();
 	}
