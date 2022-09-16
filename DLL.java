@@ -119,6 +119,7 @@ public class DLL<E> {
         list.insert(0, 0);
         list.addLast(3);
         System.out.println(list.toString());
+        System.out.println(list.clone().toString());
         System.out.println(list.deepClone().toString());
     } // main
 
@@ -127,7 +128,7 @@ public class DLL<E> {
      * @return number of elements in list
      */
     public int size() {
-        return counter;
+        return this.counter;
     } // size
 
     /**
@@ -186,7 +187,7 @@ public class DLL<E> {
         } else {
             return null;
         } // if
-        counter--;
+        this.counter--;
         return temp.getElement();
     } // removeFirst
 
@@ -209,7 +210,7 @@ public class DLL<E> {
         } else {
             return null;
         } // if
-        counter--;
+        this.counter--;
         return temp.getElement();
     } // removeLast
 
@@ -229,7 +230,7 @@ public class DLL<E> {
             temp.setPrev(this.tail);
             this.tail = temp;
         } // if
-        counter++;
+        this.counter++;
     } // addLast
 
     /**
@@ -250,7 +251,7 @@ public class DLL<E> {
             }
             head = temp;
         } // if
-        counter++;
+        this.counter++;
     } // addFirst
 
 
@@ -355,14 +356,14 @@ public class DLL<E> {
             E deletedElement = this.head.getElement();
             this.head.getNext().setPrev(null);
             this.head = this.head.getNext();
-            counter--;
+            this.counter--;
             return deletedElement;
         } // if
         // removing last node
         if(index == (this.size() - 1)) {
             E deletedElement = this.tail.getElement();
             this.tail.getPrev().setNext(null);
-            counter--;
+            this.counter--;
             return deletedElement;
         }
         // Finds the node to remove
@@ -380,7 +381,7 @@ public class DLL<E> {
                 this.head = temp.getNext();
             } // if
             // decrease the size by 1
-            counter--;
+            this.counter--;
             return temp.getElement();
         } // if
         else {
@@ -420,7 +421,7 @@ public class DLL<E> {
         if (index == 0) {
             this.head = insertNode;
         } // if
-        counter++;
+        this.counter++;
     } // insert
 
     /**
@@ -428,7 +429,6 @@ public class DLL<E> {
     * @param x node to remove
     */
     public void remove (Node<E> x) {
-
         //if the x or the head is null, return
         if (this.head == null || x == null) {
             return;
@@ -444,14 +444,14 @@ public class DLL<E> {
         if (this.head.equals(x)) {
             this.head = x.getNext();
             x.getNext().setPrev(null);
-            counter--;
+            this.counter--;
             return;
         } // if
         // if x is the tail node
         if (this.tail.equals(x)) {
             this.tail = x.getPrev();
             x.getPrev().setNext(null);
-            counter--;
+            this.counter--;
             return;
         } // if
 
@@ -464,7 +464,7 @@ public class DLL<E> {
         if ( x.getPrev() != null ) {
             x.getNext().setPrev(x.getPrev());
         } // if
-        counter--;
+        this.counter--;
         return;
     } // remove
 
@@ -479,7 +479,7 @@ public class DLL<E> {
         this.tail.setPrev(null);
         this.head = null;
         this.tail = this.head;
-        counter = 0;
+        this.counter = 0;
     } // void
 
     /**
@@ -493,36 +493,30 @@ public class DLL<E> {
         if(this.size() == 0) {
             return copyList;
         } // if
-        Node<E> temp = this.head;
-        // if only one element in list
-        if(this.size() == 1) {
-            Node<E> newHead = new Node<E>(temp.getElement(), null, null);
-            copyList.head = newHead;
-            copyList.tail = newHead;
-            copyList.counter++;
-            return copyList;
-        } // if
-        Node<E> newNode = new Node<E>(temp.getNext().getElement(), null, null);
-        Node<E> newHead = new Node<E>(temp.getElement(), null, newNode);
-        copyList.head = newHead;
-        newNode.setPrev(copyList.head);
-        copyList.counter = 2;
-        temp = temp.getNext();
-        for (int i = 0; i < (this.size() - 2); i++) {
-            copyList.counter++;
-            temp = temp.getNext();
-            if(temp.getNext() != null) {
-                Node<E> addingNode = new Node<E>(temp.getElement(), temp.getPrev(), temp.getNext());
-                addingNode.getPrev().setNext(addingNode);
-            } else {
-                Node<E> addingNode = new Node<E>(temp.getElement(), temp.getPrev(), null);
-                addingNode.getPrev().setNext(addingNode);
-                copyList.tail = addingNode;
-                break;
-            } // if
-        } // for
-        return copyList;
 
+        // Setting up variables for list
+        Node<E> temp = this.head;
+        Node<E> newHead = null;
+        Node<E> newTail = null;
+        copyList.counter = 0;
+
+        while(temp != null) {
+            // For first node
+            if (temp.getPrev() == null) {
+                newHead = new Node<>(temp.getElement());
+                newTail = newHead;
+                copyList.counter++;
+            } else {
+                newTail.setNext(new Node<E>(temp.getElement(), newTail, null));
+                newTail = newTail.getNext();
+                copyList.counter++;
+            } // if
+            temp = temp.getNext();
+        } // while
+        // Declaring the head and tail
+        copyList.head = newHead;
+        copyList.tail = newTail;
+        return copyList;
     } // deepClone
 
     /**
