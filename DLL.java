@@ -114,9 +114,12 @@ public class DLL<E> {
      */
     public static void main(String[] args) {
         DLL<Integer> list = new DLL<>();
-        list.addLast(1);
-        list.removeLast();
+        list.insert(0, 1);
+        list.insert(1, 2);
+        list.insert(0, 0);
+        list.addLast(3);
         System.out.println(list.toString());
+        System.out.println(list.deepClone().toString());
     } // main
 
     /**
@@ -127,91 +130,86 @@ public class DLL<E> {
         return counter;
     } // size
 
+    /**
+     * Returns true if there are not any elements in the list.
+     * @return true is empty, false is not
+     */
     public boolean isEmpty() {
         if (this.size() == 0) {
-            System.out.println("List is empty.");
             return true;
         } else {
-            System.out.println("List is not empty.");
             return false;
         }
     } // isEmpty
 
     /**
      * Returns (but does not remove) the first element of the list.
-     * @return
+     * @return first element of list
      */
     public E first() {
         Node<E> elementToReturn = this.head;
         if (elementToReturn == null) {
-            System.out.println("The list is empty and does not contain any elements.");
             return null;
         } else {
-            System.out.println("The first element in the list is " + elementToReturn.getElement() + ".");
             return elementToReturn.getElement();
-        }
+        } // if
     } // first
 
     /**
      * Returns (but does not remove) the last element of the list
-     * @return
+     * @return last element of list
      */
     public E last() {
         Node<E> lastElement = this.tail;
         if (lastElement == null) {
-            System.out.println("The list is empty and does not contain any elements.");
             return null;
         } else {
-            System.out.println("The last element in the list is " + lastElement.getElement() + ".");
             return lastElement.getElement();
-        }
+        } // if
     } // last
 
     /**
      * Removes and rerurns the first element in the list.
-     * @return
+     * @return removed element
      *
      */
     public E removeFirst() {
         Node<E> temp = new Node<>();
         if (this.head != null) {
-            if (this.head.next == null) {
+            temp = this.head;
+            if (this.head.getNext() == null) {
                 this.head = null;
-                System.out.println("First item in list removed. No items left.");
             } else {
-                temp = this.head;
-                head = head.next;
-                head.setPrev(null);
-                System.out.println("First item in list removed.");
-                return temp.getElement();
-            }
+                this.head = head.getNext();
+                this.head.setPrev(null);
+            } // if
         } else {
-            System.out.println("List is empty, nothing to remove.");
-        }
+            return null;
+        } // if
+        counter--;
         return temp.getElement();
     } // removeFirst
 
     /**
      * Removes and rerurns the last element in the list.
-     * @return
+     * @return removed element
      *
      */
     public E removeLast() {
         Node<E> temp = new Node<>();
         if (this.head != null) {
-            if (this.head.next == null) {
+            temp = this.tail;
+            if (this.head.getNext() == null) {
                 this.head = null;
-                System.out.println("Last and only item removed. List is now empty.");
             } else {
                 // traverse to the second last element of list
-                temp = tail;
-                tail = tail.prev;
-                tail.next = null;
-                System.out.println("Last item in the list removed.");
-            }
+                this.tail = this.tail.getPrev();
+                this.tail.setNext(null);
+            } // if
         } else {
-            System.out.println("List is empty, nothing to remove.");
-        }
+            return null;
+        } // if
+        counter--;
         return temp.getElement();
     } // removeLast
 
@@ -343,28 +341,47 @@ public class DLL<E> {
 
     /**
     * Removes an element at the specified position from the list.
+    * @param index location of the element to remove
     * @return the element that was removed
     */
     public E remove(int index) {
-
+        // removing first node
+        if(index == 0 && this.size() == 1) {
+            E deletedElement = this.head.getElement();
+            this.clear();
+            return deletedElement;
+        } // if
+        if (index == 0) {
+            E deletedElement = this.head.getElement();
+            this.head.getNext().setPrev(null);
+            this.head = this.head.getNext();
+            counter--;
+            return deletedElement;
+        } // if
+        // removing last node
+        if(index == (this.size() - 1)) {
+            E deletedElement = this.tail.getElement();
+            this.tail.getPrev().setNext(null);
+            counter--;
+            return deletedElement;
+        }
+        // Finds the node to remove
         if (this.size() != 0 && this.size() > index) {
-            Node<E> temp = head.getPrev();
+            Node<E> temp = this.head;
             for (int i = 0; i < index; i++) {
                 temp = temp.getNext();
             } // for
-
-            E deletedElement = temp.getNext().getElement();
-            temp.getNext().getNext().setPrev(temp);
-            temp.setNext(temp.getNext().getNext());
-
+            // Removes the element
+            E deletedElement = temp.getElement();
+            temp.getNext().setPrev(temp.getPrev());
+            temp.getPrev().setNext(temp.getNext());
             if (index == 0) {
-                head = temp.getNext();
+                this.head.getNext().setPrev(null);
+                this.head = temp.getNext();
             } // if
             // decrease the size by 1
             counter--;
-
             return temp.getElement();
-
         } // if
         else {
             return null;
@@ -373,48 +390,69 @@ public class DLL<E> {
 
     /**
     * inserts the element at a specific position
+    * @param index location to insert the element
+    * @param element element to insert
     * @return the element
     */
     public void insert(int index, E element) {
         // return if null
+        if((this.size() + 1) < index) {
+            return;
+        } // if
         if (element == null) {
             return;
         } // if
-        // if the DLL is empty, the head of the node will be the element
-        if (this.size() == 0) {
-           head = new Node(element, null, null);
-           head.setNext(head);
-           head.setPrev(head);
-       } // if
-        else {
-            Node temp = head;
-            for (int i = 0; i < index; i++) {
-                temp = temp.getNext();
-            } // for
-            Node insertNode = new Node(element, temp.getPrev(), temp);
-            temp.getPrev().setNext(insertNode);
-            temp.setPrev(insertNode);
-            if (index == 0) {
-                head = insertNode;
-            } // if
-            counter++;
-        } // else
+        Node<E> temp = this.head;
+        if(this.size() == index) {
+            this.addLast(element);
+            return;
+        } // if
+        if(index == 0) {
+            this.addFirst(element);
+            return;
+        } // if
+        for (int i = 0; i < index; i++) {
+            temp = temp.getNext();
+        } // for
+        Node<E> insertNode = new Node<>(element, temp.getPrev(), temp);
+        temp.getPrev().setNext(insertNode);
+        temp.setPrev(insertNode);
+        if (index == 0) {
+            this.head = insertNode;
+        } // if
+        counter++;
     } // insert
 
     /**
     * The remove method removes the specified node from the list.
     * @param x node to remove
     */
-    public void remove (Node x) {
+    public void remove (Node<E> x) {
 
         //if the x or the head is null, return
-        if ( head == null || x == null) {
+        if (this.head == null || x == null) {
+            return;
+        } // if
+
+        // if it is the only node
+        if (this.size() == 1) {
+            this.clear();
             return;
         } // if
 
         //if x is the head node
-        if ( head == x) {
-            head = x.getNext();
+        if (this.head.equals(x)) {
+            this.head = x.getNext();
+            x.getNext().setPrev(null);
+            counter--;
+            return;
+        } // if
+        // if x is the tail node
+        if (this.tail.equals(x)) {
+            this.tail = x.getPrev();
+            x.getPrev().setNext(null);
+            counter--;
+            return;
         } // if
 
         // next changes if the node that's deleted isn't the last node
@@ -434,29 +472,55 @@ public class DLL<E> {
     * Removes all elements from the list
     */
     public void clear() {
-        DLL <E> newList = new DLL <E>();
+        if(this.size() == 0) {
+            return;
+        } // if
+        this.head.setNext(null);
+        this.tail.setPrev(null);
+        this.head = null;
+        this.tail = this.head;
+        counter = 0;
     } // void
 
     /**
     * Creates a new sequence of nodes whose values are equal to the
-    * objects in the original list
+    * objects in the original list.
+    * @return deep clone of the list
     */
-    public DLL<E> deepClone() throws CloneNotSupportedException {
-        DLL copyList = new DLL<E>();
-
-        if (this.size() > 0) {
-            copyList.head = new Node<>(head.getElement());
-            Node <E> middle = head.getNext();
-            Node <E> anotherTail = copyList.head;
-
-            while (middle != null) {
-                Node <E> newNode = new Node<> (middle.getElement());
-
-                anotherTail.setNext(newNode);
-                anotherTail = newNode;
-                middle = middle.getNext();
-            } // while
+    public DLL<E> deepClone() {
+        DLL<E> copyList = new DLL<E>();
+        // if no elements in list
+        if(this.size() == 0) {
+            return copyList;
         } // if
+        Node<E> temp = this.head;
+        // if only one element in list
+        if(this.size() == 1) {
+            Node<E> newHead = new Node<E>(temp.getElement(), null, null);
+            copyList.head = newHead;
+            copyList.tail = newHead;
+            copyList.counter++;
+            return copyList;
+        } // if
+        Node<E> newNode = new Node<E>(temp.getNext().getElement(), null, null);
+        Node<E> newHead = new Node<E>(temp.getElement(), null, newNode);
+        copyList.head = newHead;
+        newNode.setPrev(copyList.head);
+        copyList.counter = 2;
+        temp = temp.getNext();
+        for (int i = 0; i < (this.size() - 2); i++) {
+            copyList.counter++;
+            temp = temp.getNext();
+            if(temp.getNext() != null) {
+                Node<E> addingNode = new Node<E>(temp.getElement(), temp.getPrev(), temp.getNext());
+                addingNode.getPrev().setNext(addingNode);
+            } else {
+                Node<E> addingNode = new Node<E>(temp.getElement(), temp.getPrev(), null);
+                addingNode.getPrev().setNext(addingNode);
+                copyList.tail = addingNode;
+                break;
+            } // if
+        } // for
         return copyList;
 
     } // deepClone
@@ -472,31 +536,82 @@ public class DLL<E> {
         Node<E> yPrevNode = y.getPrev();
         Node<E> yNextNode = y.getNext();
 
+        // Swapping head and tail
+        if(x.equals(this.head) && y.equals(this.tail)) {
+            x.setPrev(yPrevNode);
+            x.setNext(null);
+            y.setPrev(null);
+            y.setNext(xNextNode);
+            xNextNode.setPrev(y);
+            yPrevNode.setNext(x);
+            this.head = y;
+            this.tail = x;
+            return;
+        } // if
+
+        // Assigns head and tail if needed
+        if(this.head.equals(x)) {
+            this.head = y;
+        } // if
+        if(this.tail.equals(y)) {
+            this.tail = x;
+        }
         // Checks if x and y are next to each other
         if(yPrevNode.equals(x)) {
-            y.setPrev(xPrevNode);
+            if(yNextNode != null) {
+                yNextNode.setPrev(x);
+            } // if
+            if(xPrevNode != null) {
+                y.setPrev(xPrevNode);
+            } else {
+                y.setPrev(null);
+            } // if
             y.setNext(x);
-            x.setNext(yNextNode);
+            if(yNextNode != null) {
+                x.setNext(yNextNode);
+            } else {
+                x.setNext(null);
+            } // if
             x.setPrev(y);
+            if(xPrevNode != null) {
+                xPrevNode.setNext(y);
+            } // if
         } else {
             x.setPrev(yPrevNode);
-            x.setNext(yNextNode);
-            y.setPrev(xPrevNode);
+            if (yNextNode != null) {
+                x.setNext(yNextNode);
+            } else {
+                x.setNext(null);
+            } // if
+            if (xPrevNode != null) {
+                y.setPrev(xPrevNode);
+            } else {
+                y.setPrev(null);
+            } // if
             y.setNext(xNextNode);
+            if (xPrevNode != null) {
+                xPrevNode.setNext(y);
+            } // if
+            yPrevNode.setNext(x);
+            xNextNode.setPrev(y);
+            if (yNextNode != null) {
+                yNextNode.setPrev(x);
+            } // if
         } // if
     } // swap
 
-    /*
-    * returns a shallow copy/ clone() of the DLL
+    /**
+    * Returns a shallow copy of the DLL.
+    * @return shallow copy of the list
     */
-    protected E clone() throws CloneNotSupportedException {
-	    this.head = head;
-	    this.tail = tail;
-	    this.counter = counter; 
-	    
-	return super.clone();
-	}
+    public DLL<E> clone() {
+	    DLL<E> copyList = new DLL<E>();
+	    copyList = this;
+	    copyList.head = this.head;
+	    copyList.tail = this.tail;
+	    copyList.counter = this.counter;
+        return copyList;
+	} // clone
 
-    
 
 } // DLL
